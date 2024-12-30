@@ -1,10 +1,11 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import Airtable from "airtable";
 import bodyParser from "body-parser";
 import { check, validationResult } from "express-validator";
 import cors from "cors";
 import { formatQuestion } from "./util";
+import natural from "natural";
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ app.use(cors());
 const PORT = process.env.PORT || 3000;
 
 const formatError = (errors: any) => errors.array().map((err: any) => err.msg);
+
+// Clear stopwords, this is to allow TfIdf to score every word.
+natural.TfIdf.prototype.setStopwords([]);
 
 /**
  * Create a New Question
@@ -133,14 +137,29 @@ app.get("/questions", async (req: Request, res: Response): Promise<void> => {
     }
 
     if (query) {
-      filteredRecords = filteredRecords.filter((record) => {
+      const tokenizer = new natural.WordTokenizer();
+      const tfidf = new natural.TfIdf();
+
+      filteredRecords.forEach((record) => {
         const question = (record.fields.Question as string) || "";
         const answer = (record.fields.Answer as string) || "";
-        return (
-          question.toLowerCase().includes((query as string).toLowerCase()) ||
-          answer.toLowerCase().includes((query as string).toLowerCase())
+
+        const tokens = tokenizer.tokenize(
+          (question + " " + answer).toLowerCase()
         );
+        tfidf.addDocument(tokens.join(" "));
       });
+
+      const queryStr = query as string;
+      const scores: { index: number; score: number }[] = [];
+      tfidf.tfidfs(queryStr, (i, measure) => {
+        scores.push({ index: i, score: measure });
+      });
+
+      scores.sort((a, b) => b.score - a.score);
+      filteredRecords = scores
+        .filter((score) => score.score > 0)
+        .map((score) => filteredRecords[score.index]);
     }
 
     res.status(200).json(filteredRecords.map((rec) => formatQuestion(rec)));

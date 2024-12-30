@@ -30,7 +30,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setUser(email);
-    console.log("email", email);
     localStorage.setItem("userEmail", email);
   };
 

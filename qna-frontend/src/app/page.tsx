@@ -8,8 +8,6 @@ import { LogOut } from "lucide-react";
 export default function Home() {
   const { user, logout } = useAuth();
 
-  console.log(user);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">

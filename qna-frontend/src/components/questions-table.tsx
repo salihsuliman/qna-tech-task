@@ -71,6 +71,7 @@ export function QuestionsTable() {
   useEffect(() => {
     const loadQuestions = async () => {
       try {
+        setLoading(true);
         const data = await fetchQuestions(undefined, search);
         setQuestions(data);
       } catch {
@@ -113,7 +114,7 @@ export function QuestionsTable() {
                 <TableHead>Created by</TableHead>
                 <TableHead>Last update by</TableHead>
                 <TableHead>Assigned to</TableHead>
-
+                <TableHead>Created on</TableHead>
                 <TableHead>Updated on</TableHead>
                 <TableHead>Answers</TableHead>
               </TableRow>
