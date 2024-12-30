@@ -6,7 +6,6 @@ This repository contains the QnA tech task project, which consists of a Node.js 
 
 - [Running the Backend](#running-the-backend)
 - [Running the Frontend](#running-the-frontend)
-- [Environment Configuration](#environment-configuration)
 - [Additional Information](#additional-information)
 
 ---
@@ -57,25 +56,6 @@ The frontend will launch, and you can access the application in your browser at 
 
 ---
 
-## Environment Configuration
-
-Both the backend and frontend require environment variables to be configured. To set these up:
-
-1. Locate the `.env.example` files in the `qna-backend/` and `qna-frontend/` directories.
-
-2. Create a new `.env` file in each directory:
-    ```bash
-    cd qna-backend/
-    cp .env.example .env
-    ```
-    ```bash
-    cd qna-frontend/
-    cp .env.example .env
-    ```
-
-3. Update the contents of the `.env` files as needed for your environment.
-
----
 
 ## Additional Information
 
